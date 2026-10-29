@@ -5,57 +5,148 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101820">
-  <title>TSIIX ESPORTS | Clubs Stats</title>
+  <title>TSIIX ESPORTS | Estatísticas</title>
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       background: #101820;
       color: #f4f7fa;
       font-family: Arial, sans-serif;
     }
+
     header, main, footer {
       width: min(100% - 32px, 1000px);
       margin: auto;
     }
+
     header {
       padding: 32px 0 24px;
       border-bottom: 1px solid #30414e;
     }
-    .eyebrow { color: #75dfbd; letter-spacing: 3px; }
-    h1 { margin-bottom: 8px; }
-    .muted { color: #aab9c5; }
+
+    .eyebrow {
+      color: #75dfbd;
+      letter-spacing: 3px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    h1 {
+      margin: 12px 0 8px;
+      font-size: clamp(27px, 5vw, 40px);
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    .muted {
+      color: #aab9c5;
+    }
+
     .cards {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
       margin: 24px 0;
     }
+
     .card, .panel {
       background: #1b2934;
       border: 1px solid #30414e;
       border-radius: 12px;
       padding: 20px;
     }
-    .card span { color: #aab9c5; font-size: 13px; }
+
+    .card span {
+      color: #aab9c5;
+      font-size: 12px;
+    }
+
     .number {
       font-size: 30px;
       font-weight: bold;
       margin-top: 12px;
     }
-    .panel { margin: 16px 0; }
+
+    .panel {
+      margin: 16px 0;
+    }
+
     .notice {
       color: #ffdc91;
       font-size: 14px;
       line-height: 1.6;
     }
-    a { color: #75dfbd; }
-    footer { padding: 24px 0; color: #aab9c5; }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th, td {
+      padding: 13px 10px;
+      border-bottom: 1px solid #30414e;
+    }
+
+    th {
+      color: #75dfbd;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    td {
+      font-size: 14px;
+    }
+
+    .status {
+      color: #aab9c5;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .button {
+      display: inline-block;
+      background: #75dfbd;
+      color: #101820;
+      padding: 11px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    a {
+      color: #75dfbd;
+    }
+
+    footer {
+      padding: 24px 0;
+      color: #aab9c5;
+      font-size: 13px;
+    }
+
     @media (min-width: 650px) {
-      .cards { grid-template-columns: repeat(4, 1fr); }
+      .cards {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
   </style>
 </head>
+
 <body>
   <header>
     <div class="eyebrow">EA SPORTS FC 27 · CLUBS</div>
@@ -67,48 +158,231 @@
     <section class="cards">
       <div class="card">
         <span>PARTIDAS</span>
-        <div class="number">—</div>
+        <div class="number" id="games">—</div>
       </div>
+
       <div class="card">
         <span>VITÓRIAS</span>
-        <div class="number">—</div>
+        <div class="number" id="wins">—</div>
       </div>
+
       <div class="card">
         <span>GOLS MARCADOS</span>
-        <div class="number">—</div>
+        <div class="number" id="goals">—</div>
       </div>
+
       <div class="card">
         <span>APROVEITAMENTO</span>
-        <div class="number">—</div>
+        <div class="number" id="winrate">—</div>
       </div>
     </section>
 
     <section class="panel">
-      <h2>Artilharia</h2>
-      <p class="muted">O ranking aparecerá aqui após conectar os dados.</p>
+      <h2>Artilharia e jogadores</h2>
+
+      <p class="muted">
+        Os jogadores aparecerão aqui quando as estatísticas forem carregadas.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Jogador</th>
+              <th>Partidas</th>
+              <th>Gols</th>
+              <th>Assistências</th>
+              <th>Nota média</th>
+            </tr>
+          </thead>
+
+          <tbody id="players">
+            <tr>
+              <td colspan="5">Aguardando os dados do clube...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="panel">
       <h2>Últimas partidas</h2>
-      <p class="muted">Os resultados serão exibidos aqui.</p>
-    </section>
-
-    <section class="panel">
-      <h2>Atualização dos dados</h2>
-      <p class="notice">
-        O painel visual está publicado, mas ainda não está conectado
-        às estatísticas reais do jogo.
+      <p class="muted">
+        O histórico será adicionado quando a fonte de dados estiver configurada.
       </p>
     </section>
 
-    <p>
-      Consulte também:
-      <a href="https://fcclub.gg/en" target="_blank" rel="noopener">
-        FCClub.gg
+    <section class="panel">
+      <h2>Atualização das estatísticas</h2>
+      <p id="status" class="status">
+        Tentando carregar as estatísticas...
+      </p>
+
+      <button class="button" id="refresh" type="button">
+        Atualizar painel
+      </button>
+    </section>
+
+    <section class="panel">
+      <h2>Perfil do clube</h2>
+      <p class="muted">
+        TSIIX ESPORTS · EA SPORTS FC 27 · Nova geração
+      </p>
+
+      <a
+        href="https://www.proclubsanalytics.com/club/756201?platform=common-gen5&amp;lang=pt&amp;clubName=TSIIX+ESPORTS"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Ver perfil na plataforma de estatísticas
       </a>
-    </p>
+    </section>
   </main>
 
-  <footer>TSIIX ESPORTS · Site independente de fãs.</footer>
+  <footer>
+    TSIIX ESPORTS · Site independente de fãs.
+  </footer>
+
+  <script>
+    const formatar = valor => {
+      if (valor === null || valor === undefined || valor === "") {
+        return "—";
+      }
+
+      const numero = Number(valor);
+
+      return Number.isFinite(numero)
+        ? numero.toLocaleString("pt-BR", {
+            maximumFractionDigits: 2
+          })
+        : "—";
+    };
+
+    async function carregarEstatisticas() {
+      const status = document.getElementById("status");
+      const botao = document.getElementById("refresh");
+
+      botao.disabled = true;
+      status.textContent = "Buscando dados salvos do clube...";
+
+      try {
+        const resposta = await fetch("./stats.json", {
+          cache: "no-store"
+        });
+
+        if (!resposta.ok) {
+          throw new Error(
+            "O arquivo stats.json ainda não existe ou não foi publicado."
+          );
+        }
+
+        const dados = await resposta.json();
+
+        if (
+          String(dados.clubId) !== "756201" ||
+          dados.platform !== "common-gen5"
+        ) {
+          throw new Error(
+            "O arquivo não corresponde ao clube e à plataforma esperados."
+          );
+        }
+
+        const geral = dados.overall;
+
+        if (!geral || typeof geral !== "object") {
+          throw new Error("As estatísticas gerais não estão disponíveis.");
+        }
+
+        document.getElementById("games").textContent =
+          formatar(geral.gamesPlayed);
+
+        document.getElementById("wins").textContent =
+          formatar(geral.wins);
+
+        document.getElementById("goals").textContent =
+          formatar(geral.goals);
+
+        const jogos = Number(geral.gamesPlayed);
+        const vitorias = Number(geral.wins);
+
+        document.getElementById("winrate").textContent =
+          geral.gamesPlayed != null &&
+          geral.wins != null &&
+          Number.isFinite(jogos) &&
+          Number.isFinite(vitorias) &&
+          jogos > 0
+            ? (vitorias / jogos * 100).toLocaleString("pt-BR", {
+                maximumFractionDigits: 1
+              }) + "%"
+            : "—";
+
+        const corpo = document.getElementById("players");
+        corpo.replaceChildren();
+
+        const jogadores = Array.isArray(dados.members)
+          ? [...dados.members]
+          : [];
+
+        jogadores.sort((a, b) =>
+          (Number(b.goals) || 0) - (Number(a.goals) || 0)
+        );
+
+        if (jogadores.length === 0) {
+          const linha = document.createElement("tr");
+          const celula = document.createElement("td");
+
+          celula.colSpan = 5;
+          celula.textContent = "Nenhum jogador disponível nos dados.";
+
+          linha.appendChild(celula);
+          corpo.appendChild(linha);
+        } else {
+          for (const jogador of jogadores) {
+            const linha = document.createElement("tr");
+
+            const valores = [
+              jogador.name || "Nome indisponível",
+              formatar(jogador.gamesPlayed),
+              formatar(jogador.goals),
+              formatar(jogador.assists),
+              formatar(jogador.ratingAve)
+            ];
+
+            for (const valor of valores) {
+              const celula = document.createElement("td");
+              celula.textContent = valor;
+              linha.appendChild(celula);
+            }
+
+            corpo.appendChild(linha);
+          }
+        }
+
+        const data = new Date(dados.updatedAt);
+
+        status.textContent =
+          "Dados carregados. Última consulta: " +
+          (Number.isNaN(data.getTime())
+            ? "data indisponível"
+            : data.toLocaleString("pt-BR")) +
+          ". A atualização automática depende do processo no GitHub Actions.";
+
+      } catch (erro) {
+        status.textContent =
+          "Estatísticas indisponíveis: " + erro.message;
+
+        console.error(erro);
+      } finally {
+        botao.disabled = false;
+      }
+    }
+
+    document.getElementById("refresh").addEventListener(
+      "click",
+      carregarEstatisticas
+    );
+
+    carregarEstatisticas();
+  </script>
 </body>
 </html>
