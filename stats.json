@@ -1,0 +1,21 @@
+
+{
+  "clubId": "756201",
+  "platform": "common-gen5",
+  "overall": {
+    "gamesPlayed": 70,
+    "wins": 28,
+    "ties": 6,
+    "losses": 36,
+    "goals": 182,
+    "goalsAgainst": 190,
+    "gamesPlayedPlayoff": 4,
+    "promotions": 3,
+    "relegations": 0,
+    "bestDivision": "6",
+    "skillRating": 1550,
+    "leagueAppearances": 66
+  },
+  "members": [],
+  "updatedAt": null
+}
