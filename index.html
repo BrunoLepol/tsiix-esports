@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101820">
+  <title>TSIIX ESPORTS | Clubs Stats</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #101820;
+      color: #f4f7fa;
+      font-family: Arial, sans-serif;
+    }
+    header, main, footer {
+      width: min(100% - 32px, 1000px);
+      margin: auto;
+    }
+    header {
+      padding: 32px 0 24px;
+      border-bottom: 1px solid #30414e;
+    }
+    .eyebrow { color: #75dfbd; letter-spacing: 3px; }
+    h1 { margin-bottom: 8px; }
+    .muted { color: #aab9c5; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 24px 0;
+    }
+    .card, .panel {
+      background: #1b2934;
+      border: 1px solid #30414e;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .card span { color: #aab9c5; font-size: 13px; }
+    .number {
+      font-size: 30px;
+      font-weight: bold;
+      margin-top: 12px;
+    }
+    .panel { margin: 16px 0; }
+    .notice {
+      color: #ffdc91;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    a { color: #75dfbd; }
+    footer { padding: 24px 0; color: #aab9c5; }
+    @media (min-width: 650px) {
+      .cards { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">EA SPORTS FC 27 · CLUBS</div>
+    <h1>TSIIX ESPORTS</h1>
+    <div class="muted">Painel de estatísticas do clube</div>
+  </header>
+
+  <main>
+    <section class="cards">
+      <div class="card">
+        <span>PARTIDAS</span>
+        <div class="number">—</div>
+      </div>
+      <div class="card">
+        <span>VITÓRIAS</span>
+        <div class="number">—</div>
+      </div>
+      <div class="card">
+        <span>GOLS MARCADOS</span>
+        <div class="number">—</div>
+      </div>
+      <div class="card">
+        <span>APROVEITAMENTO</span>
+        <div class="number">—</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Artilharia</h2>
+      <p class="muted">O ranking aparecerá aqui após conectar os dados.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Últimas partidas</h2>
+      <p class="muted">Os resultados serão exibidos aqui.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Atualização dos dados</h2>
+      <p class="notice">
+        O painel visual está publicado, mas ainda não está conectado
+        às estatísticas reais do jogo.
+      </p>
+    </section>
+
+    <p>
+      Consulte também:
+      <a href="https://fcclub.gg/en" target="_blank" rel="noopener">
+        FCClub.gg
+      </a>
+    </p>
+  </main>
+
+  <footer>TSIIX ESPORTS · Site independente de fãs.</footer>
+</body>
+</html>
