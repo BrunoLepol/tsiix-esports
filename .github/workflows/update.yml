@@ -22,10 +22,12 @@ jobs:
           python-version: "3.12"
 
       - name: Instalar biblioteca
-        run: pip install -r requirements.txt
+        timeout-minutes: 5
+        run: python -u -m pip install --no-input --disable-pip-version-check -v -r requirements.txt
 
       - name: Consultar estatisticas
-        run: python update_stats.py
+        timeout-minutes: 3
+        run: python -u update_stats.py
 
       - name: Salvar dados atualizados
         run: |
