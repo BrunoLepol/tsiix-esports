@@ -25,6 +25,48 @@ jobs:
         timeout-minutes: 5
         run: python -u -m pip install --no-input --disable-pip-version-check -v -r requirements.txt
 
+      - name: Testar acesso a API da EA
+        timeout-minutes: 1
+        run: |
+          python - <<'PY'
+          import json
+          import urllib.request
+          import urllib.error
+
+          url = "https://proclubs.ea.com/api/fc/clubs/overallStats?platform=common-gen5&clubIds=756201"
+
+          headers = {
+              "Accept": "application/json",
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36",
+              "Referer": "https://www.ea.com/"
+          }
+
+          req = urllib.request.Request(url, headers=headers)
+
+          try:
+              with urllib.request.urlopen(req, timeout=20) as response:
+                  dados = json.loads(response.read().decode("utf-8"))
+                  print("HTTP:", response.status)
+
+                  if not isinstance(dados, list) or not dados:
+                      raise RuntimeError("Resposta vazia ou inesperada")
+
+                  clube = dados[0]
+
+                  if str(clube.get("clubId")) != "756201":
+                      raise RuntimeError("ID do clube incorreto")
+
+                  print("Clube:", clube["clubId"])
+                  print("Partidas:", clube.get("gamesPlayed"))
+                  print("Vitorias:", clube.get("wins"))
+                  print("Gols:", clube.get("goals"))
+
+          except urllib.error.HTTPError as erro:
+              print("HTTP:", erro.code)
+              print(erro.read(500).decode("utf-8", errors="replace"))
+              raise
+          PY
+
       - name: Consultar estatisticas
         timeout-minutes: 3
         run: python -u update_stats.py
