@@ -1,6 +1,5 @@
 
 import json
-import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -17,53 +16,69 @@ def first_record(data):
     return data if isinstance(data, dict) else None
 
 
+def to_number(record, key):
+    value = record.get(key)
+    if value is None:
+        return None
+
+    try:
+        number = float(value)
+        return int(number) if number.is_integer() else number
+    except (ValueError, TypeError):
+        return None
+
+
 def main():
-    # Solicita somente dados públicos do clube.
     api = FC27API(output="raw")
 
+    # Estatisticas gerais
     overall_data = api.get_club_overall_stats(CLUB_ID)
-    members_data = api.get_member_stats(CLUB_ID)
-
     overall = first_record(overall_data)
 
     if not overall:
-        raise RuntimeError("A API não retornou estatísticas gerais.")
+        raise RuntimeError("A EA nao retornou estatisticas gerais.")
 
-    if not isinstance(members_data, dict):
-        raise RuntimeError("Formato inesperado nas estatísticas dos jogadores.")
+    if str(overall.get("clubId")) != str(CLUB_ID):
+        raise RuntimeError("O ID do clube nao corresponde.")
 
-    members = members_data.get("members")
+    # Jogadores
+    members_data = api.get_member_stats(CLUB_ID)
+    members = (
+        members_data.get("members")
+        if isinstance(members_data, dict)
+        else None
+    )
 
     if not isinstance(members, list):
-        raise RuntimeError("A lista de jogadores não foi encontrada.")
+        raise RuntimeError("Lista de jogadores indisponivel.")
 
-    # Não publica um arquivo aparentemente válido com
-    # estatísticas incompletas ou sem identificação do clube.
-    returned_id = overall.get("clubId")
-    if returned_id is not None and str(returned_id) != str(CLUB_ID):
-        raise RuntimeError("O ID do clube retornado não corresponde.")
+    # Ultimas partidas amistosas retornadas pela EA.
+    friendlies_data = api.get_club_matches(
+        CLUB_ID,
+        match_type="friendlyMatch",
+        count=10
+    )
 
-    def number(record, key):
-        value = record.get(key)
-        if value is None:
-            return None
-        try:
-            return float(value) if "." in str(value) else int(value)
-        except (ValueError, TypeError):
-            return None
+    if not isinstance(friendlies_data, list):
+        raise RuntimeError("Formato inesperado no historico de amistosos.")
 
     stats = {
         "clubId": str(CLUB_ID),
         "platform": PLATFORM,
         "updatedAt": datetime.now(timezone.utc).isoformat(),
         "overall": {
-            key: number(overall, key)
+            key: to_number(overall, key)
             for key in (
-                "gamesPlayed", "wins", "ties", "losses",
-                "goals", "goalsAgainst"
+                "gamesPlayed",
+                "wins",
+                "ties",
+                "losses",
+                "goals",
+                "goalsAgainst",
             )
         },
-        "members": []
+        "members": [],
+        "friendlyMatches": friendlies_data,
     }
 
     for player in members:
@@ -72,29 +87,29 @@ def main():
 
         stats["members"].append({
             "name": player.get("name"),
-            "gamesPlayed": number(player, "gamesPlayed"),
-            "goals": number(player, "goals"),
-            "assists": number(player, "assists"),
-            "ratingAve": number(player, "ratingAve")
+            "gamesPlayed": to_number(player, "gamesPlayed"),
+            "goals": to_number(player, "goals"),
+            "assists": to_number(player, "assists"),
+            "ratingAve": to_number(player, "ratingAve"),
         })
 
     stats["members"].sort(
-        key=lambda p: p["goals"] or 0,
+        key=lambda player: player["goals"] or 0,
         reverse=True
     )
 
-    # Escreve somente após a consulta e validação terminarem.
+    # Grava apenas depois de todas as consultas serem concluidas.
     temp = OUTPUT.with_suffix(".tmp")
     temp.write_text(
-        json.dumps(stats, ensure_ascii=False, indent=2),
+        json.dumps(stats, ensure_ascii=False, indent=2, default=str),
         encoding="utf-8"
     )
     temp.replace(OUTPUT)
 
-    print(
-        f"Dados atualizados: {len(stats['members'])} jogadores. "
-        f"Clube {CLUB_ID}."
-    )
+    print(f"Clube: {CLUB_ID}")
+    print(f"Jogadores: {len(stats['members'])}")
+    print(f"Amistosos retornados: {len(friendlies_data)}")
+    print("Arquivo stats.json atualizado.")
 
 
 if __name__ == "__main__":
